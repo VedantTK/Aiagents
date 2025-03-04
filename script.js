@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('Form Data to Send:', data);
 
-        const serviceID = 'service_qizh5xt'; // Replace with your Service ID
-        const templateID = 'template_wap72a3'; // Replace with your Template ID
+        const serviceID = ''; // Replace with your Service ID
+        const templateID = ''; // Replace with your Template ID
 
         emailjs.sendForm(serviceID, templateID, form)
             .then((response) => {
