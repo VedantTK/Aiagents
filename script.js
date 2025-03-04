@@ -1,6 +1,6 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
-    // Toggle menu for mobile
+    // Toggle menu for mobile (unchanged)
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
 
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hamburger.classList.toggle('open');
     });
 
-    // Smooth scrolling for nav links
+    // Smooth scrolling for nav links (unchanged)
     document.querySelectorAll('.nav-links a').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
@@ -24,26 +24,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Form submission handler
+    // Form submission handler with EmailJS
     const form = document.querySelector('#contactForm');
+    const submitButton = document.querySelector('#submitButton');
+    const formMessage = document.querySelector('#formMessage');
+
+    if (!form || !submitButton || !formMessage) {
+        console.error('Form elements not found. Check HTML IDs.');
+        return;
+    }
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        console.log('Form submission triggered');
+
+        submitButton.disabled = true;
+        formMessage.style.display = 'block';
+        formMessage.textContent = 'Sending...';
+        formMessage.style.color = '#3498db';
+
         const formData = new FormData(form);
-        const name = formData.get('name');
-        const email = formData.get('email');
-        const phone = formData.get('phone');
-        const industry = formData.get('industry');
-        const message = formData.get('message');
-        const yourEmail = 'your-email@example.com'; // Update this with your actual email
-        const subject = `New Inquiry from ${name}`;
-        const body = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nIndustry: ${industry}\nMessage: ${message}`;
-        const mailtoLink = `mailto:${yourEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
-        alert('Thank you for your inquiry! We will get back to you soon.');
-        form.reset();
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            phone: formData.get('phone'),
+            industry: formData.get('industry'),
+            message: formData.get('message')
+        };
+
+        console.log('Form Data to Send:', data);
+
+        const serviceID = 'service_qizh5xt'; // Replace with your Service ID
+        const templateID = 'template_wap72a3'; // Replace with your Template ID
+
+        emailjs.sendForm(serviceID, templateID, form)
+            .then((response) => {
+                console.log('Email sent successfully:', response);
+                formMessage.textContent = 'Thank you! Your inquiry has been sent successfully.';
+                formMessage.style.color = '#28a745';
+                form.reset();
+                setTimeout(() => {
+                    formMessage.style.display = 'none';
+                }, 5000);
+            })
+            .catch((error) => {
+                console.error('Failed to send email:', error);
+                formMessage.textContent = 'Failed to send inquiry. Please try again later.';
+                formMessage.style.color = '#dc3545';
+                setTimeout(() => {
+                    formMessage.style.display = 'none';
+                }, 5000);
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+            });
     });
 
-    // Animations on scroll
+    // Animations on scroll (unchanged)
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -66,11 +103,24 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(element);
     });
 
-    // Chatbot functionality
+    // Chatbot functionality (unchanged)
     let chatbotState = {
         awaitingBusinessInfo: false,
         userBusiness: '',
         awaitingAgentType: false
+    };
+
+    const aiAgents = {
+        "chatbot": "A Chatbot Agent handles customer inquiries via text, perfect for 24/7 support on websites or apps. It can answer FAQs or guide users—like me!",
+        "voice assistant": "A Voice Assistant Agent uses speech to assist hands-free, ideal for phone support or task management, e.g., scheduling or reminders.",
+        "customer support": "A Customer Support Agent combines chat and voice to resolve issues, escalating to humans when needed—great for complex queries.",
+        "sales": "A Sales Agent automates lead generation and follow-ups, boosting sales with personalized recommendations, e.g., in e-commerce.",
+        "hr assistant": "An HR Assistant Agent streamlines recruitment and employee queries, like onboarding or checking vacation balances.",
+        "content generation": "A Content Generation Agent creates marketing copy or reports, saving time on blogs, emails, or product descriptions.",
+        "data analysis": "A Data Analysis Agent provides insights from business data, like sales trends or forecasts, for smart decisions.",
+        "workflow automation": "A Workflow Automation Agent handles repetitive tasks, e.g., scheduling or invoicing, to boost efficiency.",
+        "security monitoring": "A Security Monitoring Agent detects threats or anomalies, like fraud or network issues, to protect your business.",
+        "personal productivity": "A Personal Productivity Agent assists employees with tasks, like summarizing reports or managing schedules."
     };
 
     window.toggleChatbot = function() {
@@ -84,19 +134,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const userMessage = input.value.trim();
 
         if (userMessage) {
-            // Add user message
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-message';
             userDiv.textContent = userMessage;
             messages.appendChild(userDiv);
 
-            // Bot response
             const botDiv = document.createElement('div');
             botDiv.className = 'message bot-message';
             botDiv.textContent = getBotResponse(userMessage);
             messages.appendChild(botDiv);
 
-            // Clear input and scroll to bottom
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
         }
@@ -105,33 +152,39 @@ document.addEventListener('DOMContentLoaded', () => {
     function getBotResponse(message) {
         message = message.toLowerCase();
 
-        // Handle conversational state
         if (chatbotState.awaitingBusinessInfo) {
             chatbotState.userBusiness = message;
             chatbotState.awaitingBusinessInfo = false;
             chatbotState.awaitingAgentType = true;
-            return `Great! For a ${message} business, we can offer various AI agents. What type do you need? Examples include chatbots (like me!), voice assistants, website bots, or custom automation agents.`;
+            return `Great! For a ${message} business, we can offer agents like chatbots for customer support, sales agents for boosting revenue, or workflow automation for efficiency. What type of AI agent do you need? Options include: ${Object.keys(aiAgents).join(', ')}.`;
         } else if (chatbotState.awaitingAgentType) {
+            const agentType = message.split(' ').find(word => aiAgents[word]) || message;
             chatbotState.awaitingAgentType = false;
-            return `Perfect! A ${message} for your ${chatbotState.userBusiness} business sounds exciting. Please fill out the Contact form above with your details, and our team will reach out to discuss how we can build it for you!`;
+            if (aiAgents[agentType]) {
+                return `Perfect! ${aiAgents[agentType]} For your ${chatbotState.userBusiness} business, this could be a game-changer. Fill out the Contact form above, and our team will reach out to build it for you!`;
+            } else {
+                return `I didn’t catch that agent type. For your ${chatbotState.userBusiness} business, we can build agents like ${Object.keys(aiAgents).slice(0, 3).join(', ')}, or others. What do you have in mind?`;
+            }
         }
 
-        // General responses
         if (message.includes('hello') || message.includes('hi')) {
-            return 'Hi there! How can I assist you today?';
-        } else if (message.includes('services')) {
-            return 'We offer AI agent solutions for industries like Real Estate, Healthcare, E-commerce, Finance, Customer Service, Manufacturing and Many more. Want to know more about any specific one?';
+            return 'Hi there! How can I assist you today? Ask me about our AI agents or how we can help your business!';
+        } else if (message.includes('services') || message.includes('offer') || message.includes('agents')) {
+            return `We provide a range of AI agents: ${Object.keys(aiAgents).join(', ')}. Each can transform your business—e.g., chatbots for support, sales agents for revenue, or data analysis for insights. Want details on any specific one?`;
         } else if (message.includes('contact')) {
-            return 'You can reach us via the Contact section above or email us at info@ailyticminds.com. Want me to scroll you there?';
+            return 'Reach us via the Contact section above or email info@ailyticminds.com. Want me to scroll you there?';
         } else if (message.includes('who') || message.includes('about')) {
-            return 'We’re AIlytic Minds, a team of AI innovators creating custom agents to transform businesses globally. Check out our About section for more!';
+            return 'We’re AIlytic Minds, innovators building custom AI agents to transform businesses globally. Check our About section or ask me about our agents!';
         } else if (message.includes('price') || message.includes('cost')) {
-            return 'Pricing depends on your specific needs. Fill out the Contact form, and we’ll get back to you with a tailored quote!';
-        } else if (message.includes('help') && (message.includes('build') || message.includes('ai') || message.includes('agent'))) {
+            return 'Pricing varies by your needs—e.g., a chatbot might differ from a data analysis agent. Fill out the Contact form for a custom quote!';
+        } else if ((message.includes('help') || message.includes('need')) && (message.includes('build') || message.includes('ai') || message.includes('agent'))) {
             chatbotState.awaitingBusinessInfo = true;
-            return 'Absolutely, we can help you build AI agents! What type of business do you run?';
+            return 'Absolutely, we can help! What type of business do you run? This helps me suggest the right AI agents for you.';
+        } else if (message.includes('what') && message.includes('need')) {
+            chatbotState.awaitingBusinessInfo = true;
+            return 'I’d love to recommend AI agents for you! What type of business do you run? That way, I can suggest what’s best.';
         } else {
-            return 'I’m here to help! You can ask about our services, how we can build AI agents for your business, contact info, or who we are. What’s on your mind?';
+            return `I’m here to assist! Ask me about our AI agents (like chatbots, voice assistants, or more), how we can build one for your business, our contact info, or who we are. What’s on your mind?`;
         }
     }
 });
