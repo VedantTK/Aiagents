@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIgentix - AI Agent Solutions</title>
+    <title>AIlytic Minds - AI Agent Solutions</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="logo">AIgentix</div>
+        <div class="logo">AIlytic Minds</div>
         <div class="hamburger">
             <span></span>
             <span></span>
@@ -41,7 +41,7 @@
         <div class="intro-cards">
             <div class="card animate-card">
                 <h3>Who We Are</h3>
-                <p>We’re AIgentix, innovators in AI technology, crafting custom agents to transform businesses globally.</p>
+                <p>We’re AIlytic Minds, innovators in AI technology, crafting custom agents to transform businesses globally.</p>
             </div>
             <div class="card animate-card">
                 <h3>How We Help</h3>
@@ -57,7 +57,7 @@
     <!-- About Section -->
     <section id="about" class="section about-section">
         <div class="about-container">
-            <h2 class="animate-text">About AIgentix</h2>
+            <h2 class="animate-text">About AIlytic Minds</h2>
             <p class="section-subtitle">Pioneering the future of intelligent automation</p>
             <p class="section-subtitle">Our team of expert AI developers and industry specialists create custom AI agents that automate processes, enhance decision-making, and improve customer experiences.</p>
             <p class="section-subtitle">With a focus on cutting-edge machine learning and natural language processing, we deliver scalable AI solutions tailored to your specific needs, ensuring seamless integration and maximum efficiency.</p>
@@ -158,7 +158,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>AIgentix</h3>
+                <h3>AIlytic Minds</h3>
                 <p>Transforming industries with AI</p>
             </div>
             <div class="footer-section">
@@ -174,12 +174,33 @@
                 <div class="social-links">
                     <a href="#">Twitter</a>
                     <a href="#">LinkedIn</a>
-                    <a href="#">Email: info@aigentix.com</a>
+                    <a href="#">Email: info@ailyticminds.com</a>
                 </div>
             </div>
         </div>
-        <p class="footer-copy">© 2025 AIgentix. All rights reserved.</p>
+        <p class="footer-copy">© 2025 AIlytic Minds. All rights reserved.</p>
     </footer>
+
+    <!-- Chatbot -->
+    <!-- Chatbot (unchanged placement) -->
+<div class="chatbot-container">
+    <div class="chatbot-button" onclick="toggleChatbot()">
+        <span>Chat</span>
+    </div>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <h3>AIlytic Minds Bot</h3>
+            <button class="chatbot-close" onclick="toggleChatbot()">✖</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot-message">Hello! How can I assist you today?</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>
